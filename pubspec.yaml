@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  firebase_core: ^3.8.0
 
 dev_dependencies:
   flutter_test:
@@ -44,8 +45,12 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  assets:
+    - assets/images/
+    - assets/images/loginPageImage.webp
+    - assets/images/example_image.png
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
   uses-material-design: true
 
-flutter:
-  assets:
-    - assets/images/example_image.png

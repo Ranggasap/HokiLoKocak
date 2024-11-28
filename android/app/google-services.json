@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "960819466293",
+    "project_id": "crack-parser-432112-q5",
+    "storage_bucket": "crack-parser-432112-q5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960819466293:android:d8c0e96ac725ee53f0217c",
+        "android_client_info": {
+          "package_name": "com.timhoki.hokilokocak"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr420wGkGaZ1vQwJlPUfBJ4cDr9nuFQW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
