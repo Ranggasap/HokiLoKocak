@@ -30,6 +30,30 @@ class LoginPage extends StatelessWidget {
                   ),
                   SizedBox(height: 40,),
 
+                  TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0)
+                      ),
+                      prefixIcon: Icon(Icons.email)
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        labelText: "Password",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0)
+                        ),
+                        prefixIcon: Icon(Icons.lock)
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
@@ -38,20 +62,46 @@ class LoginPage extends StatelessWidget {
                         },
                         icon: Icon(Icons.login, color: Colors.white,),
                         label: Text(
-                          'Login With Google',
+                          'Sign In With Email',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600
                           ),
                         ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent, // Warna background tombol
+                        backgroundColor: Colors.blue, // Warna background tombol
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       )
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                        onPressed: () {
+                          print("Lakukan Register");
+                        },
+                        icon: Icon(Icons.login, color: Colors.white,),
+                        label: Text(
+                          'Sign Up With Email',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green, // Warna background tombol
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        )
                     ),
                   ),
                   SizedBox(height: 20,),
