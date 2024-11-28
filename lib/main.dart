@@ -1,3 +1,4 @@
+import 'package:hoki_lo_kocak/LoginFeature/LoginPage.dart';
 import 'package:hoki_lo_kocak/state_util.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: LoginPage(),
     );
   }
 }
