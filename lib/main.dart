@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:hoki_lo_kocak/LoginFeature/LoginPage.dart';
 import 'package:hoki_lo_kocak/MainPage.dart';
 import 'package:hoki_lo_kocak/firebase_options.dart';
 import 'package:hoki_lo_kocak/state_util.dart';
-import 'package:flutter/material.dart';
 import 'screens/BattleScreen.dart'; 
+import 'screens/WinScreen.dart';
+import 'screens/LoseScreen.dart'; // Tambahkan import untuk layar menang dan kalah
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,17 +23,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => LoginPage(),
-        '/main': (context) => MainPage()
-      },
-      navigatorKey: Get.navigatorKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BattleScreen(), 
+      initialRoute: '/battle', // Tetapkan rute awal ke BattleScreen
+      routes: {
+        '/battle': (context) => BattleScreen(),
+        '/win': (context) => WinScreen(),  // Tambahkan rute untuk layar menang
+        '/lose': (context) => LoseScreen(), // Tambahkan rute untuk layar kalah
+      },
     );
   }
 }
