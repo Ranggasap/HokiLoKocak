@@ -1,7 +1,7 @@
 import 'package:hoki_lo_kocak/LoginFeature/LoginPage.dart';
 import 'package:hoki_lo_kocak/state_util.dart';
 import 'package:flutter/material.dart';
-import 'screens/BattleScreen.dart'; // Pastikan path ini benar sesuai struktur proyek Anda
+import 'screens/BattleScreen.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BattleScreen(), // Halaman utama adalah BattleScreen
+      home: BattleScreen(), 
     );
   }
 }
