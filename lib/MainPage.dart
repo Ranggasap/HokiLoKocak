@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:hoki_lo_kocak/Components/TableLeaderboardUI.dart';
 import 'package:hoki_lo_kocak/Services/DatabaseService.dart';
 
 class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _MainPageState();
   }
 }
@@ -15,15 +15,21 @@ class _MainPageState extends State<MainPage> {
   List<Map<String, dynamic>> _leaderboardData = [];
   bool _isLoading = true;
 
-  @override void initState() {
-    super.initState();
-    _fetchLeaderboard();
-  }
+  final List<String> botNames = [
+    'RoboWarrior',
+    'CyberNinja',
+    'MechHunter',
+    'SteelStriker',
+    'AlphaBot',
+    'TechTitan',
+    'ShadowDroid',
+    'IronGuardian'
+  ];
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _fetchLeaderboard(); // Fetch data setiap kali halaman muncul kembali
+  void initState() {
+    super.initState();
+    _fetchLeaderboard();
   }
 
   Future<void> _fetchLeaderboard() async {
@@ -33,26 +39,75 @@ class _MainPageState extends State<MainPage> {
         final winrate = (player['winrate'] ?? 0.0) * 100;
         return {
           'email': player['email'],
-          'win': player['win'].toString(), // Pastikan tipe data menjadi String
-          'lose': player['lose'].toString(), // Sama untuk lose
-          'winrate': winrate.toStringAsFixed(2), // Format double menjadi String
-          'rank': player['rank'].toString(), // Sama untuk rank
+          'win': player['win'].toString(),
+          'lose': player['lose'].toString(),
+          'winrate': winrate.toStringAsFixed(2),
+          'rank': player['rank'].toString(),
         };
       }).toList();
       _isLoading = false;
-      print("Loading data");
     });
+  }
+
+  String _generateRandomBotName() {
+    final random = Random();
+    return botNames[random.nextInt(botNames.length)];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Main Page"),
+        title: Text('Main Page'),
+        centerTitle: true,
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : TableLeaderboardUI(leaderboardData: _leaderboardData),
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: TableLeaderboardUI(
+                    leaderboardData: _leaderboardData,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          String botName = _generateRandomBotName();
+                          Navigator.pushNamed(
+                            context,
+                            '/rock-paper-scissors',
+                            arguments: botName,
+                          );
+                        },
+                        child: Text('Start Game'),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15),
+                          textStyle: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/login');
+                        },
+                        child: Text('Logout'),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15),
+                          textStyle: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

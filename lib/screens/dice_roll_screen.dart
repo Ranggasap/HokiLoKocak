@@ -13,6 +13,7 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
   bool playerRolled = false;
   late Player playerOne;
   late Player botPlayer;
+  String resultMessage = ''; // Message to display the result
 
   // Warna tema merah
   final Color primaryRedColor = Color(0xFFD32F2F); // Deep Red
@@ -37,11 +38,21 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
       playerOne.currentDiceRoll = Random().nextInt(6) + 1;
       botPlayer.currentDiceRoll = Random().nextInt(6) + 1;
       playerRolled = true;
+
+      // Determine result
+      if (playerOne.currentDiceRoll > botPlayer.currentDiceRoll) {
+        resultMessage = playerStarts ? 'Player Attack' : 'Player Defense';
+      } else if (playerOne.currentDiceRoll < botPlayer.currentDiceRoll) {
+        resultMessage = playerStarts ? 'Player Defense' : 'Player Attack';
+      } else {
+        // If it's a tie, we can still proceed to the next step
+        resultMessage = 'It\'s a Tie! Proceeding to the next step.';
+      }
     });
   }
 
   void _navigateToPvP() {
-    Navigator.pushReplacementNamed(context, '/pvp', arguments: {
+    Navigator.pushReplacementNamed(context, '/battle', arguments: {
       'playerOne': playerOne,
       'botPlayer': botPlayer,
       'playerStarts': playerStarts
@@ -91,12 +102,27 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildDiceWidget('Player Attack', playerOne.currentDiceRoll),
+                  _buildDiceWidget(
+                      playerStarts ? 'Player Attack' : 'Player Defense',
+                      playerOne.currentDiceRoll),
                   SizedBox(width: 40),
                   _buildDiceWidget(
-                      '${botPlayer.name} Defense', botPlayer.currentDiceRoll),
+                      playerStarts
+                          ? '${botPlayer.name} Defense'
+                          : '${botPlayer.name} Attack',
+                      botPlayer.currentDiceRoll),
                 ],
               ),
+              SizedBox(height: 20),
+              if (playerRolled)
+                Text(
+                  resultMessage,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: primaryRedColor,
+                  ),
+                ),
               SizedBox(height: 40),
               AnimatedSwitcher(
                 duration: Duration(milliseconds: 300),

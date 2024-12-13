@@ -56,8 +56,9 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
       return;
     }
 
+    // Pass playerStarts as true if the player won, false if lost
     Navigator.pushReplacementNamed(context, '/dice-roll',
-        arguments: {'botName': botName, 'playerWins': _didPlayerWin()});
+        arguments: {'botName': botName, 'playerStarts': _didPlayerWin()});
   }
 
   @override
