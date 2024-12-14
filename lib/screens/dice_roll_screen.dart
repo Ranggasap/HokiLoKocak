@@ -51,12 +51,15 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
     });
   }
 
-  void _navigateToPvP() {
-    Navigator.pushReplacementNamed(context, '/battle', arguments: {
-      'playerOne': playerOne,
-      'botPlayer': botPlayer,
-      'playerStarts': playerStarts
-    });
+  void _navigateToBattleScreen() {
+    Navigator.pushReplacementNamed(
+      context,
+      '/battle', // Ubah ke '/battle' sesuai dengan main.dart
+      arguments: {
+        'playerAttack': playerOne.currentDiceRoll, // Kirim nilai attack player
+        'enemyDefense': botPlayer.currentDiceRoll, // Kirim nilai defense bot
+      },
+    );
   }
 
   @override
@@ -129,7 +132,7 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
                 child: playerRolled
                     ? ElevatedButton(
                         key: ValueKey('nextButton'),
-                        onPressed: _navigateToPvP,
+                        onPressed: _navigateToBattleScreen,
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: darkRedColor,

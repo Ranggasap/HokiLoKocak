@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   Image.asset(
                     'assets/images/loginPageImage.webp',
-                    height: 400,
+                    height: 300,
                   ),
                   SizedBox(height: 40,),
 

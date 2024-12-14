@@ -6,48 +6,74 @@ class BattleScreen extends StatefulWidget {
 }
 
 class _BattleScreenState extends State<BattleScreen> {
+  late int playerAttack;
+  late int playerDefense;
+  late int enemyAttack;
+  late int enemyDefense;
+  late bool playerFirst;
+
   String playerImage = 'assets/images/stickman2.png';
   String enemyImage = 'assets/images/stickman2.png';
 
   int playerHealth = 10;
   int enemyHealth = 10;
 
-  void _performAction(String actor, String action) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    playerAttack = args['playerAttack'] ?? 0;
+    playerDefense = args['playerDefense'] ?? 0;
+    enemyAttack = args['enemyAttack'] ?? 0;
+    enemyDefense = args['enemyDefense'] ?? 0;
+    playerHealth = args['playerHealth'] ?? 10;
+    enemyHealth = args['enemyHealth'] ?? 10;
+    playerFirst = args['playerFirst'] ?? true;
+
+    // Automatically start the battle
+    _startBattle();
+  }
+
+  void _startBattle() async {
+    if (playerFirst) {
+      await _performAction("You", playerAttack, enemyDefense);
+
+      if (enemyHealth > 0) {
+        await _performAction("Enemy", enemyAttack, playerDefense);
+      }
+    } else {
+      await _performAction("Enemy", enemyAttack, playerDefense);
+
+      if (playerHealth > 0) {
+        await _performAction("You", playerAttack, enemyDefense);
+      }
+    }
+
+    if (playerHealth <= 0) {
+      Navigator.pushReplacementNamed(context, '/lose');
+    } else if (enemyHealth <= 0) {
+      Navigator.pushReplacementNamed(context, '/win');
+    }
+  }
+
+  Future<void> _performAction(String actor, int attack, int defense) async {
     setState(() {
       if (actor == "You") {
-        if (action == "Attack") {
-          playerImage = 'assets/images/stickman0.png'; // Attack image for left
-          enemyHealth -= 2;
-        } else if (action == "Defend") {
-          playerImage = 'assets/images/stickman3.png'; // Defend image for left
-        } else {
-          playerImage = 'assets/images/stickman2.png'; // Default
-        }
+        playerImage = 'assets/images/stickman0.png'; // Attack image for player
+        int damage = attack > defense ? attack - defense : 0;
+        enemyHealth -= damage;
       } else if (actor == "Enemy") {
-        if (action == "Attack") {
-          enemyImage = 'assets/images/stickman1.png'; // Attack image for right
-          playerHealth -= 2;
-        } else if (action == "Defend") {
-          enemyImage = 'assets/images/stickman4.png'; // Defend image for right
-        } else {
-          enemyImage = 'assets/images/stickman2.png'; // Default
-        }
+        enemyImage = 'assets/images/stickman1.png'; // Attack image for enemy
+        int damage = attack > defense ? attack - defense : 0;
+        playerHealth -= damage;
       }
+    });
 
-      // Reset images to default after 1 second
-      Future.delayed(Duration(seconds: 3), () {
-        setState(() {
-          playerImage = 'assets/images/stickman2.png';
-          enemyImage = 'assets/images/stickman2.png';
-        });
-      });
-
-      // Check win/lose condition
-      if (playerHealth <= 0) {
-        Navigator.pushReplacementNamed(context, '/lose');
-      } else if (enemyHealth <= 0) {
-        Navigator.pushReplacementNamed(context, '/win');
-      }
+    // Reset images to default after 1 second
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      playerImage = 'assets/images/stickman2.png';
+      enemyImage = 'assets/images/stickman2.png';
     });
   }
 
@@ -115,21 +141,6 @@ class _BattleScreenState extends State<BattleScreen> {
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                         Text('Health: $playerHealth',
                             style: TextStyle(fontSize: 16)),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () =>
-                                  _performAction("You", "Attack"),
-                              child: Text("Attack"),
-                            ),
-                            SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  _performAction("You", "Defend"),
-                              child: Text("Defend"),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                     // Enemy Column
@@ -141,24 +152,19 @@ class _BattleScreenState extends State<BattleScreen> {
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                         Text('Health: $enemyHealth',
                             style: TextStyle(fontSize: 16)),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () =>
-                                  _performAction("Enemy", "Attack"),
-                              child: Text("Attack"),
-                            ),
-                            SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  _performAction("Enemy", "Defend"),
-                              child: Text("Defend"),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ],
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, {
+                      'playerHealth': playerHealth,
+                      'enemyHealth': enemyHealth
+                    }); // Go back to dice_roll_screen with health values
+                  },
+                  child: Text("Roll Again"),
                 ),
               ],
             ),

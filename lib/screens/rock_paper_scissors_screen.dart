@@ -11,7 +11,7 @@ class RockPaperScissorsScreen extends StatefulWidget {
 class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
   GameChoice? playerChoice;
   GameChoice? botChoice;
-  String? botName;
+  String botName = 'Bot'; // Nilai default untuk botName
   bool gameFinished = false;
 
   final Color primaryRedColor = Color(0xFFE53935);
@@ -21,7 +21,10 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    botName = ModalRoute.of(context)!.settings.arguments as String;
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
+    if (args != null) {
+      botName = args; // Tetapkan nama bot jika tersedia
+    }
   }
 
   void _playRockPaperScissors(GameChoice choice) {
