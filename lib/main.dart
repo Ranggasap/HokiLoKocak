@@ -3,18 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:hoki_lo_kocak/LoginFeature/LoginPage.dart';
 import 'package:hoki_lo_kocak/MainPage.dart';
 import 'package:hoki_lo_kocak/firebase_options.dart';
+import 'package:hoki_lo_kocak/models/game_state.dart';
 import 'package:hoki_lo_kocak/screens/dice_roll_screen.dart';
-import 'package:hoki_lo_kocak/screens/BattleScreen.dart' ;
+import 'package:hoki_lo_kocak/screens/BattleScreen.dart';
 import 'package:hoki_lo_kocak/screens/WinScreen.dart';
 import 'package:hoki_lo_kocak/screens/LoseScreen.dart';
 import 'package:hoki_lo_kocak/screens/rock_paper_scissors_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GameState()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -28,14 +38,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/rock_paper_scissors', // Tetapkan rute awal ke rock_paper_scissors_screen
+      initialRoute:
+          '/rock_paper_scissors', // Tetapkan rute awal ke rock_paper_scissors_screen
       routes: {
         '/login': (context) => LoginPage(),
-        '/battle': (context) => BattleScreen(), // Gunakan alias untuk menghindari bentrok
+        '/battle': (context) => BattleScreen(),
         '/win': (context) => WinScreen(),
         '/lose': (context) => LoseScreen(),
         '/rock_paper_scissors': (context) => RockPaperScissorsScreen(),
-        '/dice-roll': (context) => DiceRollScreen(), // Gunakan alias untuk menghindari bentrok
+        '/dice-roll': (context) => DiceRollScreen(),
       },
     );
   }

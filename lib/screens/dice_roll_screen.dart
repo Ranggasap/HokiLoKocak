@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hoki_lo_kocak/models/game_state.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 import '../models/game_models.dart';
 
@@ -11,26 +13,35 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
   late String botName;
   late bool playerStarts;
   bool playerRolled = false;
+
   late Player playerOne;
   late Player botPlayer;
-  String resultMessage = ''; // Message to display the result
 
-  // Warna tema merah
-  final Color primaryRedColor = Color(0xFFD32F2F); // Deep Red
-  final Color lightRedColor = Color(0xFFEF5350); // Light Red
-  final Color darkRedColor = Color(0xFF8B0000); // Dark Red
-  final Color backgroundColor = Color(0xFFFEEAEA); // Light Pink Background
+  String resultMessage = '';
+
+  final Color primaryRedColor = Color(0xFFD32F2F);
+  final Color lightRedColor = Color(0xFFEF5350);
+  final Color darkRedColor = Color(0xFF8B0000);
+  final Color backgroundColor = Color(0xFFFEEAEA);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)!.settings.arguments as Map;
-    botName = args['botName'];
-    playerStarts =
-        args.containsKey('playerStarts') ? args['playerStarts'] : false;
+    final gameState = Provider.of<GameState>(context, listen: false);
 
-    playerOne = Player(name: 'Player');
-    botPlayer = Player(name: botName);
+    botName = args['botName'] ?? 'Bot';
+    playerStarts = args['playerStarts'] ?? false;
+
+    // Check if continuing a previous game
+    bool continueGame = args['continueGame'] ?? false;
+
+    playerOne = Player(
+        name: 'Player',
+        healthPoints: continueGame ? gameState.playerHealth : 10);
+
+    botPlayer = Player(
+        name: botName, healthPoints: continueGame ? gameState.enemyHealth : 10);
   }
 
   void _rollDice() {
@@ -39,14 +50,14 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
       botPlayer.currentDiceRoll = Random().nextInt(6) + 1;
       playerRolled = true;
 
-      // Determine result
       if (playerOne.currentDiceRoll > botPlayer.currentDiceRoll) {
-        resultMessage = playerStarts ? 'Player Attack' : 'Player Defense';
+        resultMessage =
+            playerStarts ? 'Player Attacks First' : 'Bot Attacks First';
       } else if (playerOne.currentDiceRoll < botPlayer.currentDiceRoll) {
-        resultMessage = playerStarts ? 'Player Defense' : 'Player Attack';
+        resultMessage =
+            playerStarts ? 'Player Defends First' : 'Bot Defends First';
       } else {
-        // If it's a tie, we can still proceed to the next step
-        resultMessage = 'It\'s a Tie! Proceeding to the next step.';
+        resultMessage = 'Tie! Reroll Required';
       }
     });
   }
@@ -54,10 +65,11 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
   void _navigateToBattleScreen() {
     Navigator.pushReplacementNamed(
       context,
-      '/battle', // Ubah ke '/battle' sesuai dengan main.dart
+      '/battle',
       arguments: {
-        'playerAttack': playerOne.currentDiceRoll, // Kirim nilai attack player
-        'enemyDefense': botPlayer.currentDiceRoll, // Kirim nilai defense bot
+        'playerAttack': playerOne.currentDiceRoll,
+        'enemyDefense': botPlayer.currentDiceRoll,
+        'playerFirst': playerOne.currentDiceRoll > botPlayer.currentDiceRoll
       },
     );
   }

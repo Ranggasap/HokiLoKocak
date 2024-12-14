@@ -22,15 +22,18 @@ class _BattleScreenState extends State<BattleScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)!.settings.arguments as Map;
+
     playerAttack = args['playerAttack'] ?? 0;
-    playerDefense = args['playerDefense'] ?? 0;
+    playerDefense = args['playerDefense'] ?? playerAttack;
     enemyAttack = args['enemyAttack'] ?? 0;
-    enemyDefense = args['enemyDefense'] ?? 0;
+    enemyDefense = args['enemyDefense'] ?? enemyAttack;
+
+    // Use provided health points or default to 10
     playerHealth = args['playerHealth'] ?? 10;
     enemyHealth = args['enemyHealth'] ?? 10;
+
     playerFirst = args['playerFirst'] ?? true;
 
-    // Automatically start the battle
     _startBattle();
   }
 
@@ -159,10 +162,15 @@ class _BattleScreenState extends State<BattleScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context, {
-                      'playerHealth': playerHealth,
-                      'enemyHealth': enemyHealth
-                    }); // Go back to dice_roll_screen with health values
+                    Navigator.pushReplacementNamed(context, '/dice-roll',
+                        arguments: {
+                          'playerHealth': playerHealth,
+                          'enemyHealth': enemyHealth,
+                          'botName': 'Bot',
+                          'playerStarts': playerFirst,
+                          'continueGame':
+                              true // Add a flag to indicate ongoing game
+                        });
                   },
                   child: Text("Roll Again"),
                 ),

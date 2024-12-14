@@ -11,7 +11,7 @@ class RockPaperScissorsScreen extends StatefulWidget {
 class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
   GameChoice? playerChoice;
   GameChoice? botChoice;
-  String botName = 'Bot'; // Nilai default untuk botName
+  String botName = 'Bot';
   bool gameFinished = false;
 
   final Color primaryRedColor = Color(0xFFE53935);
@@ -21,16 +21,16 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as String?;
-    if (args != null) {
-      botName = args; // Tetapkan nama bot jika tersedia
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is String) {
+      botName = args;
     }
   }
 
   void _playRockPaperScissors(GameChoice choice) {
     setState(() {
       playerChoice = choice;
-      botChoice = GameChoice.values[Random().nextInt(3)];
+      botChoice = GameChoice.values[Random().nextInt(GameChoice.values.length)];
       gameFinished = true;
     });
   }
@@ -49,19 +49,18 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
   }
 
   void _navigateToDiceRoll() {
-    if (playerChoice == botChoice) {
-      // Jika draw, reset pemilihan
-      setState(() {
-        playerChoice = null;
-        botChoice = null;
-        gameFinished = false;
-      });
-      return;
+    if (gameFinished) {
+      if (playerChoice == botChoice) {
+        setState(() {
+          playerChoice = null;
+          botChoice = null;
+          gameFinished = false;
+        });
+      } else {
+        Navigator.pushReplacementNamed(context, '/dice-roll',
+            arguments: {'botName': botName, 'playerStarts': _didPlayerWin()});
+      }
     }
-
-    // Pass playerStarts as true if the player won, false if lost
-    Navigator.pushReplacementNamed(context, '/dice-roll',
-        arguments: {'botName': botName, 'playerStarts': _didPlayerWin()});
   }
 
   @override
@@ -69,10 +68,8 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
     return Scaffold(
       backgroundColor: darkRedColor.withOpacity(0.1),
       appBar: AppBar(
-        title: Text(
-          'Rock Paper Scissors',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        title: Text('Rock Paper Scissors',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: primaryRedColor,
         elevation: 0,
@@ -103,9 +100,9 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildChoiceButton(GameChoice.rock, Icons.back_hand),
+                  _buildChoiceButton(GameChoice.rock, Icons.sports_mma),
                   SizedBox(width: 20),
-                  _buildChoiceButton(GameChoice.paper, Icons.front_hand),
+                  _buildChoiceButton(GameChoice.paper, Icons.note),
                   SizedBox(width: 20),
                   _buildChoiceButton(GameChoice.scissors, Icons.cut),
                 ],
@@ -134,12 +131,13 @@ class _RockPaperScissorsScreenState extends State<RockPaperScissorsScreen> {
                     ElevatedButton(
                       onPressed: _navigateToDiceRoll,
                       style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: primaryRedColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
+                        foregroundColor: Colors.white,
+                        backgroundColor: primaryRedColor,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      ),
                       child: Text(
                         playerChoice == botChoice
                             ? 'Play Again'
