@@ -15,8 +15,8 @@ class _BattleScreenState extends State<BattleScreen> {
   String playerImage = 'assets/images/stickman2.png';
   String enemyImage = 'assets/images/stickman2.png';
 
-  int playerHealth = 10;
-  int enemyHealth = 10;
+  int playerHealth = 3;
+  int enemyHealth = 3;
 
   @override
   void didChangeDependencies() {
@@ -28,9 +28,8 @@ class _BattleScreenState extends State<BattleScreen> {
     enemyAttack = args['enemyAttack'] ?? 0;
     enemyDefense = args['enemyDefense'] ?? enemyAttack;
 
-    // Use provided health points or default to 10
-    playerHealth = args['playerHealth'] ?? 10;
-    enemyHealth = args['enemyHealth'] ?? 10;
+    playerHealth = args['playerHealth'] ?? 3;
+    enemyHealth = args['enemyHealth'] ?? 3;
 
     playerFirst = args['playerFirst'] ?? true;
 
@@ -39,16 +38,20 @@ class _BattleScreenState extends State<BattleScreen> {
 
   void _startBattle() async {
     if (playerFirst) {
-      await _performAction("You", playerAttack, enemyDefense, isDefending: false);
+      await _performAction("You", playerAttack, enemyDefense,
+          isDefending: false);
 
       if (enemyHealth > 0) {
-        await _performAction("Enemy", enemyAttack, playerDefense, isDefending: false);
+        await _performAction("Enemy", enemyAttack, playerDefense,
+            isDefending: false);
       }
     } else {
-      await _performAction("Enemy", enemyAttack, playerDefense, isDefending: false);
+      await _performAction("Enemy", enemyAttack, playerDefense,
+          isDefending: false);
 
       if (playerHealth > 0) {
-        await _performAction("You", playerAttack, enemyDefense, isDefending: false);
+        await _performAction("You", playerAttack, enemyDefense,
+            isDefending: false);
       }
     }
 
@@ -59,16 +62,21 @@ class _BattleScreenState extends State<BattleScreen> {
     }
   }
 
-  Future<void> _performAction(String actor, int attack, int defense, {required bool isDefending}) async {
+  Future<void> _performAction(String actor, int attack, int defense,
+      {required bool isDefending}) async {
     setState(() {
       if (actor == "You") {
         // Update player image for attack or defense
-        playerImage = isDefending ? 'assets/images/stickman3.png' : 'assets/images/stickman0.png'; // Attack or defend image for player
+        playerImage = isDefending
+            ? 'assets/images/stickman3.png'
+            : 'assets/images/stickman0.png'; // Attack or defend image for player
         int damage = attack > defense ? attack - defense : 0;
         enemyHealth -= damage;
       } else if (actor == "Enemy") {
         // Update enemy image for attack or defense
-        enemyImage = isDefending ? 'assets/images/stickman4.png' : 'assets/images/stickman1.png'; // Attack or defend image for enemy
+        enemyImage = isDefending
+            ? 'assets/images/stickman4.png'
+            : 'assets/images/stickman1.png'; // Attack or defend image for enemy
         int damage = attack > defense ? attack - defense : 0;
         playerHealth -= damage;
       }
@@ -171,7 +179,8 @@ class _BattleScreenState extends State<BattleScreen> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _navigateBackToDiceRoll, // Go back to DiceRollScreen with updated HP
+                  onPressed:
+                      _navigateBackToDiceRoll, // Go back to DiceRollScreen with updated HP
                   child: Text("Back to Dice Roll"),
                 ),
               ],
@@ -182,4 +191,3 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 }
-  
