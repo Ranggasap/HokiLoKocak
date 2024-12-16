@@ -40,10 +40,10 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
 
     playerOne = Player(
         name: 'Player',
-        healthPoints: continueGame ? gameState.playerHealth : 10);
+        healthPoints: continueGame ? gameState.playerHealth : 3);
 
     botPlayer = Player(
-        name: botName, healthPoints: continueGame ? gameState.enemyHealth : 10);
+        name: botName, healthPoints: continueGame ? gameState.enemyHealth : 3);
 
     // Initialize first attacker based on initial playerStarts
     isPlayerAttacking = playerStarts;
@@ -51,23 +51,13 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
 
   void _rollDice() {
     setState(() {
-      // Generate the attacker's dice roll
+      // Generate dice rolls ensuring attack > defense by 3
       if (isPlayerAttacking) {
-        playerOne.currentDiceRoll =
-            Random().nextInt(4) + 4; // Ensure player roll is at least 4
+        playerOne.currentDiceRoll = Random().nextInt(1) + 4; // Minimum 4
         botPlayer.currentDiceRoll = playerOne.currentDiceRoll - 3;
       } else {
-        botPlayer.currentDiceRoll =
-            Random().nextInt(4) + 4; // Ensure bot roll is at least 4
+        botPlayer.currentDiceRoll = Random().nextInt(1) + 4; // Minimum 4
         playerOne.currentDiceRoll = botPlayer.currentDiceRoll - 3;
-      }
-
-      // Ensure values wrap around to remain between 1 and 6
-      if (botPlayer.currentDiceRoll <= 0) {
-        botPlayer.currentDiceRoll += 6;
-      }
-      if (playerOne.currentDiceRoll <= 0) {
-        playerOne.currentDiceRoll += 6;
       }
 
       playerRolled = true;

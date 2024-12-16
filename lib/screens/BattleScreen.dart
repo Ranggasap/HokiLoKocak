@@ -66,17 +66,15 @@ class _BattleScreenState extends State<BattleScreen> {
       {required bool isDefending}) async {
     setState(() {
       if (actor == "You") {
-        // Update player image for attack or defense
         playerImage = isDefending
             ? 'assets/images/stickman3.png'
-            : 'assets/images/stickman0.png'; // Attack or defend image for player
+            : 'assets/images/stickman0.png';
         int damage = attack > defense ? attack - defense : 0;
         enemyHealth -= damage;
       } else if (actor == "Enemy") {
-        // Update enemy image for attack or defense
         enemyImage = isDefending
             ? 'assets/images/stickman4.png'
-            : 'assets/images/stickman1.png'; // Attack or defend image for enemy
+            : 'assets/images/stickman1.png';
         int damage = attack > defense ? attack - defense : 0;
         playerHealth -= damage;
       }
@@ -91,7 +89,6 @@ class _BattleScreenState extends State<BattleScreen> {
   }
 
   void _navigateBackToDiceRoll() {
-    // Return updated health back to DiceRollScreen after the battle round
     Navigator.pop(context, {
       'playerHealth': playerHealth,
       'enemyHealth': enemyHealth,
@@ -153,7 +150,6 @@ class _BattleScreenState extends State<BattleScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    // Player Column
                     Column(
                       children: [
                         Image.asset(playerImage, width: 100, height: 100),
@@ -164,7 +160,6 @@ class _BattleScreenState extends State<BattleScreen> {
                             style: TextStyle(fontSize: 16)),
                       ],
                     ),
-                    // Enemy Column
                     Column(
                       children: [
                         Image.asset(enemyImage, width: 100, height: 100),
@@ -179,8 +174,7 @@ class _BattleScreenState extends State<BattleScreen> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed:
-                      _navigateBackToDiceRoll, // Go back to DiceRollScreen with updated HP
+                  onPressed: _navigateBackToDiceRoll,
                   child: Text("Back to Dice Roll"),
                 ),
               ],
