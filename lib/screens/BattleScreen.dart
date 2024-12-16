@@ -39,16 +39,16 @@ class _BattleScreenState extends State<BattleScreen> {
 
   void _startBattle() async {
     if (playerFirst) {
-      await _performAction("You", playerAttack, enemyDefense);
+      await _performAction("You", playerAttack, enemyDefense, isDefending: false);
 
       if (enemyHealth > 0) {
-        await _performAction("Enemy", enemyAttack, playerDefense);
+        await _performAction("Enemy", enemyAttack, playerDefense, isDefending: false);
       }
     } else {
-      await _performAction("Enemy", enemyAttack, playerDefense);
+      await _performAction("Enemy", enemyAttack, playerDefense, isDefending: false);
 
       if (playerHealth > 0) {
-        await _performAction("You", playerAttack, enemyDefense);
+        await _performAction("You", playerAttack, enemyDefense, isDefending: false);
       }
     }
 
@@ -59,14 +59,16 @@ class _BattleScreenState extends State<BattleScreen> {
     }
   }
 
-  Future<void> _performAction(String actor, int attack, int defense) async {
+  Future<void> _performAction(String actor, int attack, int defense, {required bool isDefending}) async {
     setState(() {
       if (actor == "You") {
-        playerImage = 'assets/images/stickman0.png'; // Attack image for player
+        // Update player image for attack or defense
+        playerImage = isDefending ? 'assets/images/stickman3.png' : 'assets/images/stickman0.png'; // Attack or defend image for player
         int damage = attack > defense ? attack - defense : 0;
         enemyHealth -= damage;
       } else if (actor == "Enemy") {
-        enemyImage = 'assets/images/stickman1.png'; // Attack image for enemy
+        // Update enemy image for attack or defense
+        enemyImage = isDefending ? 'assets/images/stickman4.png' : 'assets/images/stickman1.png'; // Attack or defend image for enemy
         int damage = attack > defense ? attack - defense : 0;
         playerHealth -= damage;
       }
@@ -77,6 +79,14 @@ class _BattleScreenState extends State<BattleScreen> {
     setState(() {
       playerImage = 'assets/images/stickman2.png';
       enemyImage = 'assets/images/stickman2.png';
+    });
+  }
+
+  void _navigateBackToDiceRoll() {
+    // Return updated health back to DiceRollScreen after the battle round
+    Navigator.pop(context, {
+      'playerHealth': playerHealth,
+      'enemyHealth': enemyHealth,
     });
   }
 
@@ -161,18 +171,8 @@ class _BattleScreenState extends State<BattleScreen> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/dice-roll',
-                        arguments: {
-                          'playerHealth': playerHealth,
-                          'enemyHealth': enemyHealth,
-                          'botName': 'Bot',
-                          'playerStarts': playerFirst,
-                          'continueGame':
-                              true // Add a flag to indicate ongoing game
-                        });
-                  },
-                  child: Text("Roll Again"),
+                  onPressed: _navigateBackToDiceRoll, // Go back to DiceRollScreen with updated HP
+                  child: Text("Back to Dice Roll"),
                 ),
               ],
             ),
@@ -182,3 +182,4 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 }
+  

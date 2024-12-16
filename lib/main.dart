@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hoki_lo_kocak/LoginFeature/LoginPage.dart';
-import 'package:hoki_lo_kocak/MainPage.dart';
 import 'package:hoki_lo_kocak/firebase_options.dart';
 import 'package:hoki_lo_kocak/models/game_state.dart';
 import 'package:hoki_lo_kocak/screens/dice_roll_screen.dart';
