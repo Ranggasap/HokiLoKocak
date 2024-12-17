@@ -13,11 +13,13 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
   late String botName;
   late bool playerStarts;
   bool playerRolled = false;
+  int currentTurn = 1; // Track the current turn number
 
   late Player playerOne;
   late Player botPlayer;
 
   String resultMessage = '';
+  bool isPlayerAttacking = true; // Track who is attacking/defending
 
   final Color primaryRedColor = Color(0xFFD32F2F);
   final Color lightRedColor = Color(0xFFEF5350);
@@ -38,27 +40,27 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
 
     playerOne = Player(
         name: 'Player',
-        healthPoints: continueGame ? gameState.playerHealth : 10);
+        healthPoints: continueGame ? gameState.playerHealth : 3);
 
     botPlayer = Player(
-        name: botName, healthPoints: continueGame ? gameState.enemyHealth : 10);
+        name: botName, healthPoints: continueGame ? gameState.enemyHealth : 3);
+
+    // Initialize first attacker based on initial playerStarts
+    isPlayerAttacking = playerStarts;
   }
 
   void _rollDice() {
     setState(() {
-      playerOne.currentDiceRoll = Random().nextInt(6) + 1;
-      botPlayer.currentDiceRoll = Random().nextInt(6) + 1;
-      playerRolled = true;
-
-      if (playerOne.currentDiceRoll > botPlayer.currentDiceRoll) {
-        resultMessage =
-            playerStarts ? 'Player Attacks First' : 'Bot Attacks First';
-      } else if (playerOne.currentDiceRoll < botPlayer.currentDiceRoll) {
-        resultMessage =
-            playerStarts ? 'Player Defends First' : 'Bot Defends First';
+      // Generate dice rolls ensuring attack > defense by 3
+      if (isPlayerAttacking) {
+        playerOne.currentDiceRoll = Random().nextInt(1) + 4; // Minimum 4
+        botPlayer.currentDiceRoll = playerOne.currentDiceRoll - 3;
       } else {
-        resultMessage = 'Tie! Reroll Required';
+        botPlayer.currentDiceRoll = Random().nextInt(1) + 4; // Minimum 4
+        playerOne.currentDiceRoll = botPlayer.currentDiceRoll - 3;
       }
+
+      playerRolled = true;
     });
   }
 
@@ -69,7 +71,8 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
       arguments: {
         'playerAttack': playerOne.currentDiceRoll,
         'enemyDefense': botPlayer.currentDiceRoll,
-        'playerFirst': playerOne.currentDiceRoll > botPlayer.currentDiceRoll
+        'playerFirst': isPlayerAttacking,
+        'currentTurn': currentTurn
       },
     );
   }
@@ -80,7 +83,7 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Dice Roll for Attack/Defense',
+          'Dice Roll for Attack/Defense (Turn $currentTurn)',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -106,7 +109,7 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Roll Dice to Determine Attack/Defense',
+                'Roll Dice to Determine ${isPlayerAttacking ? 'Attack' : 'Defense'}',
                 style: TextStyle(
                   fontSize: 20,
                   color: primaryRedColor,
@@ -118,11 +121,11 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildDiceWidget(
-                      playerStarts ? 'Player Attack' : 'Player Defense',
+                      isPlayerAttacking ? 'Player Attack' : 'Player Defense',
                       playerOne.currentDiceRoll),
                   SizedBox(width: 40),
                   _buildDiceWidget(
-                      playerStarts
+                      isPlayerAttacking
                           ? '${botPlayer.name} Defense'
                           : '${botPlayer.name} Attack',
                       botPlayer.currentDiceRoll),
