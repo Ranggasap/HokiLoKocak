@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:hoki_lo_kocak/Components/TableLeaderboardUI.dart';
+import 'package:hoki_lo_kocak/Services/AuthService.dart';
 import 'package:hoki_lo_kocak/Services/DatabaseService.dart';
 
 class MainPage extends StatefulWidget {

@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute:
-          '/rock_paper_scissors', // Tetapkan rute awal ke rock_paper_scissors_screen
+          '/login', // Tetapkan rute awal ke rock_paper_scissors_screen
       routes: {
         '/login': (context) => LoginPage(),
         '/battle': (context) => BattleScreen(),

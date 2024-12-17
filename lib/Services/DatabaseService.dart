@@ -18,7 +18,7 @@ class DatabaseService {
     }
   }
 
-  Future<void> addPlayer(String email, int win, int lose, double winrate, int rank) async {
+  Future<void> addPlayer(String email, int win, int lose, double winrate, String rank) async {
     try {
       await leaderboardCollection.add({
         'email': email,
@@ -32,19 +32,35 @@ class DatabaseService {
     }
   }
 
-  Future<void> updatePlayer(String docId, Map<String, dynamic> newData) async {
+  Future<void> updatePlayerByEmail(String email, Map<String, dynamic> newData) async {
     try {
-      await leaderboardCollection.doc(docId).update(newData);
+      final snapshot = await leaderboardCollection.where('email', isEqualTo: email).get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final docId = snapshot.docs.first.id; // Ambil docId dokumen pertama yang cocok
+        await leaderboardCollection.doc(docId).update(newData);
+        print("Player with email $email updated successfully.");
+      } else {
+        print("No player found with email: $email");
+      }
     } catch (e) {
-      print("Error updating player: $e");
+      print("Error updating player with email $email: $e");
     }
   }
 
-  Future<void> deletePlayer(String docId) async {
+  Future<void> deletePlayerByEmail(String email) async {
     try {
-      await leaderboardCollection.doc(docId).delete();
+      final snapshot = await leaderboardCollection.where('email', isEqualTo: email).get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final docId = snapshot.docs.first.id; // Ambil docId dokumen pertama yang cocok
+        await leaderboardCollection.doc(docId).delete();
+        print("Player with email $email deleted successfully.");
+      } else {
+        print("No player found with email: $email");
+      }
     } catch (e) {
-      print("Error deleting player: $e");
+      print("Error deleting player with email $email: $e");
     }
   }
 }
