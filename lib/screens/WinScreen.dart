@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 
 class WinScreen extends StatelessWidget {
+  final String email;
+  final int win;
+  final int lose;
+  final double winrate;
+  final int rank;
+
+  WinScreen({
+    required this.email,
+    required this.win,
+    required this.lose,
+    required this.winrate,
+    required this.rank,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,10 +22,9 @@ class WinScreen extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green.shade400, Colors.blue.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          image: DecorationImage(
+            image: AssetImage('assets/images/loginPageImage.webp'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Center(
@@ -30,7 +43,6 @@ class WinScreen extends StatelessWidget {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.sentiment_very_satisfied,
@@ -39,7 +51,7 @@ class WinScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Yeay Menang 🎉',
+                  'Selamat, kamu menang! 🎉',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -49,6 +61,32 @@ class WinScreen extends StatelessWidget {
                       ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)),
                   ),
                   textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                // Display the player's info (email, wins, losses, etc.)
+                Column(
+                  children: [
+                    Text(
+                      'Email: $email',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'Wins: $win',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'Losses: $lose',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'Winrate: ${winrate.toStringAsFixed(2)}%',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'Rank: $rank',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
@@ -62,7 +100,8 @@ class WinScreen extends StatelessWidget {
                     shadowColor: Colors.greenAccent,
                   ),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    // Navigate to Home or any other screen
+                    Navigator.pushReplacementNamed(context, '/mainpage');
                   },
                   child: Text(
                     'Kembali ke Home',

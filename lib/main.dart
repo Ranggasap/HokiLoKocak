@@ -38,15 +38,31 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/login', // Rute awal ke halaman login
+      initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),
         '/mainpage': (context) => MainPage(),
         '/battle': (context) => BattleScreen(),
-        '/win': (context) => WinScreen(),
         '/lose': (context) => LoseScreen(),
         '/rock-paper-scissors': (context) => RockPaperScissorsScreen(),
         '/dice-roll': (context) => DiceRollScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/win') {
+          final args = settings.arguments as Map<String, dynamic>;
+
+          // Make sure to check if the arguments exist before passing them
+          return MaterialPageRoute(
+            builder: (context) => WinScreen(
+              email: args['email'],        // Email argument passed
+              win: args['win'],            // Win argument passed
+              lose: args['lose'],          // Lose argument passed
+              winrate: args['winrate'],    // Win rate argument passed
+              rank: args['rank'],          // Rank argument passed
+            ),
+          );
+        }
+        return null; // Handle other routes
       },
     );
   }

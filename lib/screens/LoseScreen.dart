@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 class LoseScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Retrieve the arguments if passed
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+
+    // Retrieve data with fallback to default values if arguments are null
+    final String email = args?['email'] ?? 'unknown'; // Default email if not passed
+    final int win = args?['win'] ?? 0;  // Default win count
+    final int lose = args?['lose'] ?? 0;  // Default lose count
+    final double winrate = args?['winrate'] ?? 0.0;  // Default winrate
+    final int rank = args?['rank'] ?? 0;  // Default rank
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -61,7 +71,18 @@ class LoseScreen extends StatelessWidget {
                     shadowColor: Colors.redAccent,
                   ),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    // Navigate back to home and pass the necessary arguments
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/mainpage',
+                      arguments: {
+                        'email': email,  // Pass the email
+                        'win': win,      // Pass the win count
+                        'lose': lose,    // Pass the lose count
+                        'winrate': winrate,  // Pass the winrate
+                        'rank': rank,    // Pass the rank
+                      },
+                    );
                   },
                   child: Text(
                     'Kembali ke Home',
