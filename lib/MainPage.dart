@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:hoki_lo_kocak/Components/TableLeaderboardUI.dart';
+import 'package:hoki_lo_kocak/Constants/colors.dart';
 import 'package:hoki_lo_kocak/Services/AuthService.dart';
 import 'package:hoki_lo_kocak/Services/DatabaseService.dart';
 
@@ -59,9 +60,13 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: darkRedColor.withOpacity(0.1),
       appBar: AppBar(
-        title: Text('Main Page'),
+        title: Text('Main Page',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
+        backgroundColor: primaryRedColor,
+        elevation: 0,
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())

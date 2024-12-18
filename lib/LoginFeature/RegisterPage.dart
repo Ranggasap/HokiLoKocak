@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoki_lo_kocak/Constants/colors.dart';
 import 'package:hoki_lo_kocak/Services/AuthService.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -48,9 +49,15 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: darkRedColor.withOpacity(0.1),
       appBar: AppBar(
-        title: Text('Register'),
+        backgroundColor: primaryRedColor,
+        title: Text(
+          'Register',
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
       ),
       body: SafeArea(
         child: Center(

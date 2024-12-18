@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoki_lo_kocak/Constants/colors.dart';
 import 'package:hoki_lo_kocak/LoginFeature/RegisterPage.dart';
 import 'package:hoki_lo_kocak/MainPage.dart';
 import 'package:hoki_lo_kocak/Services/AuthService.dart';
@@ -28,14 +29,18 @@ class _LoginPageState extends State<LoginPage> {
       final user = await _authService.signInWithEmailAndPassword(email, password);
       if (user != null) {
         _showMessage("Login successful!");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()),
-        );
+        _directNavigationToMainPage();
       }
     } catch (e) {
       _showMessage(e.toString());
     }
+  }
+
+  void _directNavigationToMainPage() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainPage()),
+    );
   }
 
   void _showMessage(String message) {
@@ -49,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: darkRedColor.withOpacity(0.1),
       body: SafeArea(
           child: Center(
             child: Padding(
@@ -63,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepOrange
+                      color: darkRedColor
                     ),
                   ),
                   SizedBox(height: 20,),
@@ -157,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     child: TextButton(
                         onPressed: () {
-                          print("Masuk sebagai guest");
+                          _directNavigationToMainPage();
                         },
                         child: Text(
                           "Continue as Guest",
