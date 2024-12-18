@@ -18,7 +18,8 @@ class _MainPageState extends State<MainPage> {
   List<Map<String, dynamic>> _leaderboardData = [];
   bool _isLoading = true;
 
-  final List<String> botNames = [
+
+final List<String> botNames = [
     'RoboWarrior',
     'CyberNinja',
     'MechHunter',
@@ -31,6 +32,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    User? currentUser = AuthService().getCurrentUser();
+    print(currentUser);
     super.initState();
     _fetchLeaderboard();
   }

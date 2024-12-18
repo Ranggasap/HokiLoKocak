@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoki_lo_kocak/Services/DatabaseService.dart';
 
 class LoseScreen extends StatelessWidget {
   @override
@@ -7,11 +8,43 @@ class LoseScreen extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
     // Retrieve data with fallback to default values if arguments are null
-    final String email = args?['email'] ?? 'unknown'; // Default email if not passed
-    final int win = args?['win'] ?? 0;  // Default win count
-    final int lose = args?['lose'] ?? 0;  // Default lose count
-    final double winrate = args?['winrate'] ?? 0.0;  // Default winrate
-    final int rank = args?['rank'] ?? 0;  // Default rank
+    final String email = args?['email'] ?? 'unknown';
+    final int win = args?['win'] ?? 0;
+    final int lose = args?['lose'] ?? 0;
+    final double winrate = args?['winrate'] ?? 0.0;
+    final int rank = args?['rank'] ?? 0;
+
+    // Tambahkan metode untuk mengelola leaderboard
+    Future<void> handleLeaderboardUpdate() async {
+      final DatabaseService databaseService = DatabaseService();
+
+      try {
+        // Cek apakah pemain sudah ada di leaderboard
+        final existingPlayer = await databaseService.getPlayerByEmail(email);
+
+        if (existingPlayer == null) {
+          // Jika pemain belum ada, tambahkan ke leaderboard
+          await databaseService.addPlayer(email, win, lose + 1, winrate, rank.toString());
+          print('Player added to leaderboard.');
+        } else {
+          // Jika pemain sudah ada, perbarui data
+          final newWin = existingPlayer['win'] as int;
+          final newLose = (existingPlayer['lose'] as int) + 1;
+          final newWinrate = (newWin / (newWin + newLose));
+          final newRank = rank; // Gunakan logika rank sesuai kebutuhan
+
+          await databaseService.updatePlayerByEmail(email, {
+            'win': newWin,
+            'lose': newLose,
+            'winrate': newWinrate,
+            'rank': newRank.toString(),
+          });
+          print('Player updated in leaderboard.');
+        }
+      } catch (e) {
+        print('Error updating leaderboard: $e');
+      }
+    }
 
     return Scaffold(
       body: Container(
@@ -70,21 +103,28 @@ class LoseScreen extends StatelessWidget {
                     elevation: 10,
                     shadowColor: Colors.redAccent,
                   ),
-                  onPressed: () {
-                    // Navigate back to home and pass the necessary arguments
+                  onPressed: () async {
+                    // Panggil metode untuk mengelola leaderboard
+                    await handleLeaderboardUpdate();
+
+                    // Navigasi ke halaman utama
                     Navigator.pushReplacementNamed(
                       context,
                       '/mainpage',
                       arguments: {
-                        'email': email,  // Pass the email
-                        'win': win,      // Pass the win count
-                        'lose': lose,    // Pass the lose count
-                        'winrate': winrate,  // Pass the winrate
-                        'rank': rank,    // Pass the rank
+                        'email': email,
+                        'win': win,
+                        'lose': lose + 1,
+                        'winrate': winrate,
+                        'rank': rank,
                       },
-                    );
+                    ).catchError((error) {
+                      print('Error navigating to mainpage: $error');
+                      // Penanganan error jika perlu
+                    });
+
                   },
-                  child: Text(
+                  child: const Text(
                     'Kembali ke Home',
                     style: TextStyle(
                       fontSize: 18,

@@ -46,23 +46,7 @@ class MyApp extends StatelessWidget {
         '/lose': (context) => LoseScreen(),
         '/rock-paper-scissors': (context) => RockPaperScissorsScreen(),
         '/dice-roll': (context) => DiceRollScreen(),
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == '/win') {
-          final args = settings.arguments as Map<String, dynamic>;
-
-          // Make sure to check if the arguments exist before passing them
-          return MaterialPageRoute(
-            builder: (context) => WinScreen(
-              email: args['email'], // Email argument passed
-              win: args['win'], // Win argument passed
-              lose: args['lose'], // Lose argument passed
-              winrate: args['winrate'], // Win rate argument passed
-              rank: args['rank'], // Rank argument passed
-            ),
-          );
-        }
-        return null; // Handle other routes
+        '/Win': (context) => WinScreen(),
       },
     );
   }
