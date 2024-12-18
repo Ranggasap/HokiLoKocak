@@ -51,13 +51,18 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
 
   void _rollDice() {
     setState(() {
-      // Generate dice rolls ensuring attack > defense by 3
       if (isPlayerAttacking) {
-        playerOne.currentDiceRoll = Random().nextInt(1) + 4; // Minimum 4
-        botPlayer.currentDiceRoll = playerOne.currentDiceRoll - 3;
+        // Pastikan player attack selalu lebih besar dari enemy defense
+        botPlayer.currentDiceRoll =
+            Random().nextInt(3) + 1; // 1-3 untuk defense enemy
+        playerOne.currentDiceRoll =
+            botPlayer.currentDiceRoll + 3; // Selalu 2 poin lebih tinggi
       } else {
-        botPlayer.currentDiceRoll = Random().nextInt(1) + 4; // Minimum 4
-        playerOne.currentDiceRoll = botPlayer.currentDiceRoll - 3;
+        // Ketika enemy menyerang
+        playerOne.currentDiceRoll =
+            Random().nextInt(3) + 1; // 1-3 untuk defense player
+        botPlayer.currentDiceRoll =
+            playerOne.currentDiceRoll + 3; // Selalu 2 poin lebih tinggi
       }
 
       playerRolled = true;
@@ -71,8 +76,12 @@ class _DiceRollScreenState extends State<DiceRollScreen> {
       arguments: {
         'playerAttack': playerOne.currentDiceRoll,
         'enemyDefense': botPlayer.currentDiceRoll,
+        'enemyAttack': botPlayer.currentDiceRoll,
+        'playerDefense': playerOne.currentDiceRoll,
         'playerFirst': isPlayerAttacking,
-        'currentTurn': currentTurn
+        'currentTurn': currentTurn,
+        'playerHealth': playerOne.healthPoints,
+        'enemyHealth': botPlayer.healthPoints,
       },
     );
   }

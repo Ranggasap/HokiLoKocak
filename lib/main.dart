@@ -54,11 +54,11 @@ class MyApp extends StatelessWidget {
           // Make sure to check if the arguments exist before passing them
           return MaterialPageRoute(
             builder: (context) => WinScreen(
-              email: args['email'],        // Email argument passed
-              win: args['win'],            // Win argument passed
-              lose: args['lose'],          // Lose argument passed
-              winrate: args['winrate'],    // Win rate argument passed
-              rank: args['rank'],          // Rank argument passed
+              email: args['email'], // Email argument passed
+              win: args['win'], // Win argument passed
+              lose: args['lose'], // Lose argument passed
+              winrate: args['winrate'], // Win rate argument passed
+              rank: args['rank'], // Rank argument passed
             ),
           );
         }

@@ -22,63 +22,88 @@ class _BattleScreenState extends State<BattleScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as Map? ?? {};
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
 
     playerAttack = args['playerAttack'] ?? 0;
+    playerDefense = args['playerDefense'] ?? playerAttack;
     enemyAttack = args['enemyAttack'] ?? 0;
+    enemyDefense = args['enemyDefense'] ?? enemyAttack;
+
+    playerHealth = args['playerHealth'] ?? 3;
+    enemyHealth = args['enemyHealth'] ?? 3;
+
     playerFirst = args['playerFirst'] ?? true;
 
     _startBattle();
   }
 
-  // Method to start the battle automatically
   void _startBattle() async {
-    // Player attacks first
     if (playerFirst) {
-      await _performAction("You", playerAttack, enemyHealth, enemyDefense);
+      // Jika player menyerang duluan
+      await _performAction("You", playerAttack, enemyDefense,
+          isDefending: false);
 
-      // Check if the enemy is dead after player's attack
+      // Langsung cek apakah enemy mati setelah diserang
       if (enemyHealth <= 0) {
-        Navigator.pushReplacementNamed(context, '/win'); // Player wins
+        Navigator.pushReplacementNamed(context, '/win');
+        return;
+      }
+
+      // Jika enemy masih hidup, maka enemy akan menyerang balik
+      await _performAction("Enemy", enemyAttack, playerDefense,
+          isDefending: false);
+
+      // Cek apakah player mati setelah diserang enemy
+      if (playerHealth <= 0) {
+        Navigator.pushReplacementNamed(context, '/lose');
         return;
       }
     } else {
-      // Enemy attacks first
-      await _performAction("Enemy", enemyAttack, playerHealth, playerDefense);
+      // Jika enemy menyerang duluan
+      await _performAction("Enemy", enemyAttack, playerDefense,
+          isDefending: false);
 
-      // Check if the player is dead after enemy's attack
+      // Langsung cek apakah player mati setelah diserang
       if (playerHealth <= 0) {
-        Navigator.pushReplacementNamed(context, '/lose'); // Player loses
+        Navigator.pushReplacementNamed(context, '/lose');
+        return;
+      }
+
+      // Jika player masih hidup, maka player akan menyerang balik
+      await _performAction("You", playerAttack, enemyDefense,
+          isDefending: false);
+
+      // Cek apakah enemy mati setelah diserang player
+      if (enemyHealth <= 0) {
+        Navigator.pushReplacementNamed(context, '/win');
         return;
       }
     }
   }
 
-  // Perform attack action and update health
-  Future<void> _performAction(
-      String actor, int attack, int health, int defense) async {
+  Future<void> _performAction(String actor, int attack, int defense,
+      {required bool isDefending}) async {
     setState(() {
-      // Calculate actual damage by subtracting defense from attack
-      int actualDamage = (attack - defense);
-      if (actualDamage < 0) actualDamage = 0; // Ensure no negative damage
-
-      // Apply damage
       if (actor == "You") {
-        playerImage = 'assets/images/stickman0.png'; // Player Attack Image
-        enemyHealth -= actualDamage; // Decrease enemy health
+        playerImage = isDefending
+            ? 'assets/images/stickman3.png'
+            : 'assets/images/stickman0.png';
+        int damage = attack > defense ? attack - defense : 0;
+        enemyHealth -= damage;
       } else if (actor == "Enemy") {
-        enemyImage = 'assets/images/stickman1.png'; // Enemy Attack Image
-        playerHealth -= actualDamage; // Decrease player health
+        enemyImage = isDefending
+            ? 'assets/images/stickman4.png'
+            : 'assets/images/stickman1.png';
+        int damage = attack > defense ? attack - defense : 0;
+        playerHealth -= damage;
       }
     });
 
-    // Wait for 2 seconds before resetting images
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Reset images after attack
+    // Reset images to default after 1 second
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
-      playerImage = 'assets/images/stickman2.png'; // Reset to default player image
-      enemyImage = 'assets/images/stickman2.png'; // Reset to default enemy image
+      playerImage = 'assets/images/stickman2.png';
+      enemyImage = 'assets/images/stickman2.png';
     });
   }
 
