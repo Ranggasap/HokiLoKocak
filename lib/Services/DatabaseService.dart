@@ -63,4 +63,40 @@ class DatabaseService {
       print("Error deleting player with email $email: $e");
     }
   }
+
+  /// Get player data by email
+  Future<Map<String, dynamic>?> getPlayerByEmail(String email) async {
+    try {
+      final snapshot = await leaderboardCollection.where('email', isEqualTo: email).get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.first.data() as Map<String, dynamic>;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching player with email $email: $e");
+      return null;
+    }
+  }
+
+  /// Add or update player based on email existence
+  Future<void> addOrUpdatePlayer(String email, int win, int lose, double winrate, String rank) async {
+    try {
+      final existingPlayer = await getPlayerByEmail(email);
+
+      if (existingPlayer == null) {
+        await addPlayer(email, win, lose, winrate, rank);
+      } else {
+        await updatePlayerByEmail(email, {
+          'win': win,
+          'lose': lose,
+          'winrate': winrate,
+          'rank': rank,
+        });
+      }
+    } catch (e) {
+      print("Error in addOrUpdatePlayer for email $email: $e");
+    }
+  }
 }
